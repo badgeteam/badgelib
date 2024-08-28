@@ -49,7 +49,7 @@ static inline void array_insert_n(
     void *array, size_t ent_size, size_t ent_count, void const *insert, size_t index, size_t insert_count
 ) {
     // Copy the remainder of the array forward.
-    array_copy(array, array, ent_size, index + 1, index, ent_count - index);
+    array_copy(array, array, ent_size, index + insert_count, index, ent_count - index);
     // Copy the new data into the array.
     if (insert)
         array_copy(array, insert, ent_size, index, 0, insert_count);
@@ -63,7 +63,7 @@ static inline void
     if (removed)
         array_copy(removed, array, ent_size, 0, index, remove_count);
     // Copy the remainder of the array backward.
-    array_copy(array, array, ent_size, index, index + 1, ent_count - index);
+    array_copy(array, array, ent_size, index, index + remove_count, ent_count - index);
 }
 
 // Insert an element into an array.
