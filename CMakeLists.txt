@@ -8,5 +8,6 @@ add_library(badgelib
     src/badge_err.c
     src/badge_strings.c
     src/list.c
+    src/refcount.c
 )
 target_include_directories(badgelib PUBLIC include)
