@@ -182,7 +182,7 @@ static inline bool array_lencap_insert_n(
 ) {
     void **array_ptr = _array_ptr;
     if (array_lencap_resize(array_ptr, ent_size, ent_count_ptr, ent_cap_ptr, *ent_count_ptr + insert_count)) {
-        array_insert_n(*array_ptr, ent_size, *ent_count_ptr, insert, index, insert_count);
+        array_insert_n(*array_ptr, ent_size, *ent_count_ptr - insert_count, insert, index, insert_count);
         return true;
     }
     return false;
@@ -209,7 +209,7 @@ static inline bool array_lencap_insert(
 ) {
     void **array_ptr = _array_ptr;
     if (array_lencap_resize(array_ptr, ent_size, ent_count_ptr, ent_cap_ptr, *ent_count_ptr + 1)) {
-        array_insert(*array_ptr, ent_size, *ent_count_ptr, insert, index);
+        array_insert(*array_ptr, ent_size, *ent_count_ptr - 1, insert, index);
         return true;
     }
     return false;

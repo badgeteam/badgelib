@@ -20,6 +20,7 @@
 
 
 #ifdef BADGEROS_KERNEL
+#include "cpu/panic.h"
 #include "log.h"
 #include "meta.h"
 
@@ -27,8 +28,8 @@
 #define assert_always(condition)                                                                                       \
     do {                                                                                                               \
         if (__builtin_expect((condition) == 0, 0)) {                                                                   \
-            logkf(LOG_FATAL, "%{cs}:%{d}: Assertion %{cs} failed.", __FILE_NAME__, __LINE__, #condition);              \
-            __builtin_trap();                                                                                          \
+            logkf_from_isr(LOG_FATAL, "%{cs}:%{d}: Assertion %{cs} failed.", __FILE_NAME__, __LINE__, #condition);     \
+            panic_abort();                                                                                             \
         }                                                                                                              \
     } while (false)
 
