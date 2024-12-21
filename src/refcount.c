@@ -3,6 +3,8 @@
 
 #include "refcount.h"
 
+#include <malloc.h>
+
 #ifdef BADGEROS_KERNEL
 
 #include <cpu/panic.h>
