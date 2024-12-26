@@ -20,9 +20,9 @@
 
 
 #ifdef BADGEROS_KERNEL
-#include "cpu/panic.h"
 #include "log.h"
 #include "meta.h"
+#include "panic.h"
 
 // Assert based on a condition in both debug and release builds.
 #define assert_always(condition)                                                                                       \

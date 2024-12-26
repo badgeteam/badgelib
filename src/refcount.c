@@ -7,8 +7,8 @@
 
 #ifdef BADGEROS_KERNEL
 
-#include <cpu/panic.h>
 #include <log.h>
+#include <panic.h>
 
 static inline void rc_abort(void *ptr, int value) {
     logkf(LOG_FATAL, "Refcount pointer 0x%{size;x} has invalid share count %{d}", ptr, value);
