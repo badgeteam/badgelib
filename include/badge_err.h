@@ -134,6 +134,7 @@ char const *badge_ecause_get_name(badge_ecause_t eloc) __attribute__((const));
 
 #ifdef BADGEROS_KERNEL
 #include "log.h"
+#include "panic.h"
 // Show a warning message if the error condition fails.
 #define badge_err_log_warn(ec)                                                                                         \
     do {                                                                                                               \
@@ -176,7 +177,7 @@ char const *badge_ecause_get_name(badge_ecause_t eloc) __attribute__((const));
                 badge_eloc_get_name((ec)->location),                                                                   \
                 badge_ecause_get_name((ec)->cause)                                                                     \
             );                                                                                                         \
-            __builtin_trap();                                                                                          \
+            panic_abort();                                                                                             \
         }                                                                                                              \
     } while (0)
 
