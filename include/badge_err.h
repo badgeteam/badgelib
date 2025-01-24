@@ -114,6 +114,8 @@ typedef enum {
     ECAUSE_NOTEMPTY,
     // The resource is not in the correct state for the operation.
     ECAUSE_STATE,
+    // I/O error.
+    ECAUSE_IOERR,
     // Number of badge_ecause_t values
     _badge_ecause_num,
 } badge_ecause_t;
