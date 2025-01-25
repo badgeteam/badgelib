@@ -35,6 +35,7 @@
 
 #else
 #include "stdio.h"
+#include "stdlib.h"
 
 // Assert based on a condition in both debug and release builds.
 #define assert_always(condition)                                                                                       \
@@ -43,7 +44,7 @@
             fflush(stdout);                                                                                            \
             fprintf(stderr, "\033[31m%s:%d: Assertion %s failed.\033[0m", __FILE_NAME__, __LINE__, #condition);        \
             fflush(stderr);                                                                                            \
-            __builtin_trap();                                                                                          \
+            abort();                                                                                                   \
         }                                                                                                              \
     } while (false)
 
@@ -55,9 +56,26 @@
 #define assert_dev_keep(condition) ((void)(condition))
 // Assert based on a condition in debug builds.
 #define assert_dev_drop(condition) ((void)0)
+// Assert a path to be unreachable.
+#define assert_unreachable()       __builtin_unreachable()
 #else
 // Assert based on a condition in debug builds, run normally in release builds.
 #define assert_dev_keep(condition) assert_always(condition)
 // Assert based on a condition in debug builds.
 #define assert_dev_drop(condition) assert_always(condition)
+#ifdef BADGEROS_KERNEL
+// Assert a path to be unreachable.
+#define assert_unreachable()                                                                                           \
+    do {                                                                                                               \
+        logkf_from_isr(LOG_FATAL, "Code path should not be reachable: %{cs}:%{d}", __FILE_NAME__, __LINE__);           \
+        panic_abort();                                                                                                 \
+        __builtin_unreachable();                                                                                       \
+    } while (0)
+#else
+// Assert a path to be unreachable.
+#define assert_unreachable()                                                                                           \
+    do {                                                                                                               \
+        printf("FATAL: Code path should not be reachable: %s:%d", __FILE_NAME__, __LINE__) abort();                    \
+    } while (0)
+#endif
 #endif
