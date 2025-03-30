@@ -116,6 +116,12 @@ typedef enum {
     ECAUSE_STATE,
     // I/O error.
     ECAUSE_IOERR,
+    // Operation would block.
+    ECAUSE_WOULDBLOCK,
+    // Socket/FIFO/pipe closed.
+    ECAUSE_PIPE_CLOSED,
+    // Seek operation on non-seekable file.
+    ECAUSE_UNSEEKABLE,
     // Number of badge_ecause_t values
     _badge_ecause_num,
 } badge_ecause_t;
