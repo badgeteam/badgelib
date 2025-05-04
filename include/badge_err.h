@@ -122,6 +122,10 @@ typedef enum {
     ECAUSE_PIPE_CLOSED,
     // Seek operation on non-seekable file.
     ECAUSE_UNSEEKABLE,
+    // Invalid file descriptor.
+    ECAUSE_BAD_FD,
+    // Cross-device hard-link attempted.
+    ECAUSE_CROSSDEV,
     // Number of badge_ecause_t values
     _badge_ecause_num,
 } badge_ecause_t;
