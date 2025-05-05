@@ -1,6 +1,14 @@
 
 #include "badge_err.h"
 
+#ifdef BADGEROS_KERNEL
+#include "log.h"
+#include "panic.h"
+#else
+#include <stdio.h>
+#include <stdlib.h>
+#endif
+
 // Names for badge_eloc_t.
 char const *badge_eloc_name[_badge_eloc_num] = {
     "ELOC_UNKNOWN",
@@ -43,4 +51,44 @@ char const *badge_eloc_get_name(badge_eloc_t eloc) {
 // Get the name of a badge_ecause_t.
 char const *badge_ecause_get_name(badge_ecause_t ecause) {
     return (ecause < 0 || ecause >= _badge_ecause_num) ? "unknown cause" : badge_ecause_name[ecause];
+}
+
+
+
+void badge_err_log_impl(badge_err_t ec, bool is_err, char const *file, int line) {
+#ifdef BADGEROS_KERNEL
+    logkf(
+        is_err ? LOG_ERROR : LOG_WARN,
+        "%{cs}:%{d}: %{cs} error: %{cs}",
+        file,
+        line,
+        badge_eloc_get_name(ec.location),
+        badge_ecause_get_name(ec.cause)
+    );
+#else
+    if (is_err) {
+        fputs("\033[31m", stdout);
+    } else {
+        fputs("\033[33m", stdout);
+    }
+    printf("%s:%d: %s error: %s", file, line, badge_eloc_get_name(ec.location), badge_ecause_get_name(ec.cause));
+#endif
+}
+
+void badge_err_assert_failed(badge_err_t ec, char const *file, int line) {
+#ifdef BADGEROS_KERNEL
+    logkf(
+        LOG_FATAL,
+        "%{cs}:%{d}: %{cs} error: %{cs}",
+        file,
+        line,
+        badge_eloc_get_name(ec.location),
+        badge_ecause_get_name(ec.cause)
+    );
+    panic_abort();
+#else
+    fputs("\033[31m", stdout);
+    printf("%s:%d: %s error: %s", file, line, badge_eloc_get_name(ec.location), badge_ecause_get_name(ec.cause));
+    abort();
+#endif
 }

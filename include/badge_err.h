@@ -143,22 +143,14 @@ char const *badge_eloc_get_name(badge_eloc_t eloc) __attribute__((const));
 char const *badge_ecause_get_name(badge_ecause_t eloc) __attribute__((const));
 
 
+void badge_err_log_impl(badge_err_t ec, bool is_err, char const *file, int line);
+void badge_err_assert_failed(badge_err_t ec, char const *file, int line);
 
-#ifdef BADGEROS_KERNEL
-#include "log.h"
-#include "panic.h"
 // Show a warning message if the error condition fails.
 #define badge_err_log_warn(ec)                                                                                         \
     do {                                                                                                               \
         if (__builtin_expect((ec) != NULL && (ec)->cause != 0, 0)) {                                                   \
-            logkf(                                                                                                     \
-                LOG_WARN,                                                                                              \
-                "%{cs}:%{d}: %{cs} error: %{cs}",                                                                      \
-                __FILE__,                                                                                              \
-                __LINE__,                                                                                              \
-                badge_eloc_get_name((ec)->location),                                                                   \
-                badge_ecause_get_name((ec)->cause)                                                                     \
-            );                                                                                                         \
+            badge_err_log_impl(*(ec), false, __FILE__, __LINE__);                                                      \
         }                                                                                                              \
     } while (0)
 
@@ -166,14 +158,7 @@ char const *badge_ecause_get_name(badge_ecause_t eloc) __attribute__((const));
 #define badge_err_log_err(ec)                                                                                          \
     do {                                                                                                               \
         if (__builtin_expect((ec) != NULL && (ec)->cause != 0, 0)) {                                                   \
-            logkf(                                                                                                     \
-                LOG_ERROR,                                                                                             \
-                "%{cs}:%{d}: %{cs} error: %{cs}",                                                                      \
-                __FILE__,                                                                                              \
-                __LINE__,                                                                                              \
-                badge_eloc_get_name((ec)->location),                                                                   \
-                badge_ecause_get_name((ec)->cause)                                                                     \
-            );                                                                                                         \
+            badge_err_log_impl(*(ec), true, __FILE__, __LINE__);                                                       \
         }                                                                                                              \
     } while (0)
 
@@ -181,15 +166,7 @@ char const *badge_ecause_get_name(badge_ecause_t eloc) __attribute__((const));
 #define badge_err_assert_always(ec)                                                                                    \
     do {                                                                                                               \
         if (__builtin_expect((ec) != NULL && (ec)->cause != 0, 0)) {                                                   \
-            logkf(                                                                                                     \
-                LOG_FATAL,                                                                                             \
-                "%{cs}:%{d}: %{cs} error: %{cs}",                                                                      \
-                __FILE__,                                                                                              \
-                __LINE__,                                                                                              \
-                badge_eloc_get_name((ec)->location),                                                                   \
-                badge_ecause_get_name((ec)->cause)                                                                     \
-            );                                                                                                         \
-            panic_abort();                                                                                             \
+            badge_err_assert_failed(*(ec), __FILE__, __LINE__);                                                        \
         }                                                                                                              \
     } while (0)
 
@@ -199,7 +176,6 @@ char const *badge_ecause_get_name(badge_ecause_t eloc) __attribute__((const));
 #else
 // Assert if the error condition fails in debug mode.
 #define badge_err_assert_dev(ec) ((void)0)
-#endif
 #endif
 
 // Sets `ec` to the given `location` and `cause` values if `ec` is not `NULL`.
