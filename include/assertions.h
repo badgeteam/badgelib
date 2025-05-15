@@ -28,8 +28,9 @@
 #define assert_always(condition)                                                                                       \
     do {                                                                                                               \
         if (__builtin_expect((condition) == 0, 0)) {                                                                   \
+            claim_panic();                                                                                             \
             logkf_from_isr(LOG_FATAL, "%{cs}:%{d}: Assertion %{cs} failed.", __FILE_NAME__, __LINE__, #condition);     \
-            panic_abort();                                                                                             \
+            panic_abort_unchecked();                                                                                   \
         }                                                                                                              \
     } while (false)
 
@@ -67,15 +68,16 @@
 // Assert a path to be unreachable.
 #define assert_unreachable()                                                                                           \
     do {                                                                                                               \
+        claim_panic();                                                                                                 \
         logkf_from_isr(LOG_FATAL, "Code path should not be reachable: %{cs}:%{d}", __FILE_NAME__, __LINE__);           \
-        panic_abort();                                                                                                 \
-        __builtin_unreachable();                                                                                       \
+        panic_abort_unchecked();                                                                                       \
     } while (0)
 #else
 // Assert a path to be unreachable.
 #define assert_unreachable()                                                                                           \
     do {                                                                                                               \
-        printf("FATAL: Code path should not be reachable: %s:%d", __FILE_NAME__, __LINE__) abort();                    \
+        printf("FATAL: Code path should not be reachable: %s:%d", __FILE_NAME__, __LINE__);                            \
+        abort();                                                                                                       \
     } while (0)
 #endif
 #endif
