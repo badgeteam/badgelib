@@ -33,10 +33,11 @@ static inline size_t cstr_length(char const *string) {
 }
 // Compute the length of a C-string at most `max_length` characters long.
 static inline size_t cstr_length_upto(char const *string, size_t max_len) {
-#ifndef __clang_analyzer__
-    return __builtin_strnlen(string, max_len);
+#ifdef __clang__
+    size_t strnlen(char const *, size_t);
+    return strnlen(string, max_len);
 #else
-    return 0;
+    return __builtin_strnlen(string, max_len);
 #endif
 }
 // Find the first occurrance `value` in C-string `string`.
