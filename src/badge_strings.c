@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #include <badge_strings.h>
+#include <malloc.h>
 
 
 
@@ -60,50 +61,85 @@ ptrdiff_t cstr_last_index_upto(char const *string, char value, size_t last_index
 
 
 
+// Duplicate a C-string.
+char *cstr_duplicate(char const *a) {
+    size_t len = cstr_length(a);
+    char  *ptr = malloc(len + 1);
+    if (ptr) {
+        mem_copy(ptr, a, len);
+        ptr[len] = 0;
+    }
+    return ptr;
+}
+
+
+
 // Test the equality of two C-strings.
-bool cstr_equals(char const *a, char const *b) {
+int cstr_compare(char const *a, char const *b) {
     while (1) {
         if (*a != *b)
-            return false;
+            return *a - *b;
         if (!*a)
-            return true;
+            return 0;
         a++, b++;
     }
 }
 
 // Test the of the first `length` characters equality of two C-strings.
-bool cstr_prefix_equals(char const *a, char const *b, size_t length) {
+int cstr_prefix_compare(char const *a, char const *b, size_t length) {
     while (length--) {
         if (*a != *b)
-            return false;
+            return *a - *b;
         if (!*a)
-            return true;
+            return 0;
         a++, b++;
     }
-    return true;
+    return 0;
 }
 
 // Test the equality of two C-strings, case-insensitive.
-bool cstr_equals_case(char const *a, char const *b) {
+int cstr_compare_case(char const *a, char const *b) {
     while (1) {
         if (ascii_char_to_lower(*a) != ascii_char_to_lower(*b))
-            return false;
+            return ascii_char_to_lower(*a) - ascii_char_to_lower(*b);
         if (!*a)
-            return true;
+            return 0;
         a++, b++;
     }
 }
 
 // Test the of the first `length` characters equality of two C-strings, case-insensitive.
-bool cstr_prefix_equals_case(char const *a, char const *b, size_t length) {
+int cstr_prefix_compare_case(char const *a, char const *b, size_t length) {
     while (length--) {
         if (ascii_char_to_lower(*a) != ascii_char_to_lower(*b))
-            return false;
+            return ascii_char_to_lower(*a) - ascii_char_to_lower(*b);
         if (!*a)
-            return true;
+            return 0;
         a++, b++;
     }
-    return true;
+    return 0;
+}
+
+
+
+// Test the equality of two C-strings.
+bool cstr_equals(char const *a, char const *b) {
+    return cstr_compare(a, b) == 0;
+}
+
+// Test the of the first `length` characters equality of two C-strings.
+bool cstr_prefix_equals(char const *a, char const *b, size_t length) {
+    return cstr_prefix_compare(a, b, length) == 0;
+}
+
+// Test the equality of two C-strings, case-insensitive.
+bool cstr_equals_case(char const *a, char const *b) {
+    return cstr_compare_case(a, b) == 0;
+}
+
+// Test the of the first `length` characters equality of two C-strings, case-insensitive.
+bool cstr_prefix_equals_case(char const *a, char const *b, size_t length) {
+    return cstr_prefix_compare_case(a, b, length) == 0;
 }
 
 

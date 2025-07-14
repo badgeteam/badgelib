@@ -53,6 +53,18 @@ ptrdiff_t cstr_index_from(char const *string, char value, size_t first_index) __
 // Returns -1 when not found.
 ptrdiff_t cstr_last_index_upto(char const *string, char value, size_t last_index) __attribute__((pure));
 
+// Duplicate a C-string.
+char *cstr_duplicate(char const *a);
+
+// Test the equality of two C-strings.
+int cstr_compare(char const *a, char const *b) __attribute__((pure));
+// Test the of the first `length` characters equality of two C-strings.
+int cstr_prefix_compare(char const *a, char const *b, size_t length) __attribute__((pure));
+// Test the equality of two C-strings, case-insensitive.
+int cstr_compare_case(char const *a, char const *b) __attribute__((pure));
+// Test the of the first `length` characters equality of two C-strings, case-insensitive.
+int cstr_prefix_compare_case(char const *a, char const *b, size_t length) __attribute__((pure));
+
 // Test the equality of two C-strings.
 bool cstr_equals(char const *a, char const *b) __attribute__((pure));
 // Test the of the first `length` characters equality of two C-strings.
