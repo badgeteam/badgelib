@@ -18,7 +18,7 @@ void dlist_concat(dlist_t *front, dlist_t *back) {
         // Concatenate lists.
         front->tail->next    = back->head;
         back->head->previous = front->tail;
-        front->tail          = back->head;
+        front->tail          = back->tail;
         *back                = DLIST_EMPTY;
 
     } else if (front->tail != NULL) {
